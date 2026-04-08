@@ -1,26 +1,14 @@
 package com.example.todo.model;
 
 public class Todo {
-    private Long count = 0L;
-    private Long id;
+    private final Long id;
     private String title, description, status;
 
-    private void setId(){
-        id = ++count;
-    }
-
-    public Todo(String title, String description, String status) {
-        setId();
+    public Todo(Long id, String title, String description, String status) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
-    }
-
-    public Todo(){
-        setId();
-        title = "";
-        description = "";
-        status = "";
     }
 
     public Long getId() {
@@ -50,4 +38,18 @@ public class Todo {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Todo{");
+        sb.append(", id=").append(id);
+        sb.append(", title=").append(title);
+        sb.append(", description=").append(description);
+        sb.append(", status=").append(status);
+        sb.append('}');
+        return sb.toString();
+    }
+
+
 }
