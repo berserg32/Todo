@@ -1,0 +1,36 @@
+services:
+
+  postgres:
+    image: postgres:16-alpine          # официальный образ PostgreSQL, alpine = лёгкий
+    container_name: todo-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}       # берёт значения из .env
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"                     # хост:контейнер — пробрасываем порт наружу
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # данные сохраняются между перезапусками
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: todo-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD}  # включаем пароль
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:   # Docker сам управляет этими папками
+  redis_data:

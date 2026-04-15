@@ -1,14 +1,51 @@
 package com.example.todo.model;
 
-public class Todo {
-    private final Long id;
-    private String title, description, status;
 
-    public Todo(Long id, String title, String description, String status) {
-        this.id = id;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "todos")
+public class Todo implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column
+    private String description;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=false)
+    private Status status;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    protected Todo() {}
+
+    public Todo(String title, String description, Status status) {
         this.title = title;
         this.description = description;
-        this.status = status;
+        this.status = status == null ? Status.NEW : status;
     }
 
     public Long getId() {
@@ -31,12 +68,12 @@ public class Todo {
         this.description = description;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatus(Status status) {
+        this.status = status == null ? Status.NEW : status;
     }
 
     @Override
@@ -51,5 +88,19 @@ public class Todo {
         return sb.toString();
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
